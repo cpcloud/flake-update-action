@@ -8,6 +8,7 @@ jobs:
   flake-update:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         input:
           - flake-utils
