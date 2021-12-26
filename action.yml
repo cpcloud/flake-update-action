@@ -1,0 +1,83 @@
+name: "flake-update-action"
+description: "Update flake dependencies"
+author: "Phillip Cloud"
+inputs:
+  dependency:
+    required: true
+    description: "The flake dependency to update"
+  pull-request-token:
+    required: true
+    description: "Access token used to create pull requests"
+  pull-request-author:
+    required: true
+    description: "The author of the pull request"
+  github-token:
+    required: false
+    description: "Access token to increase the rate limit for GitHub API requests"
+  pull-request-branch-prefix:
+    required: false
+    default: "create-pull-request/update-"
+    description: "Prefix of the branch for the pull request"
+  pull-request-labels:
+    required: false
+    description: "Labels to attach to the pull request"
+    default: ""
+  include-merge-commits:
+    required: false
+    description: "Whether to show merge commits in the log"
+    default: "false"
+  automerge:
+    required: false
+    description: "Whether to set the pull request to automatically merge on success. Requires that the automerge feature is enabled on GitHub."
+    default: "false"
+runs:
+  using: composite
+  steps:
+    - name: Get current commit
+      id: get_current_commit
+      uses: cpcloud/flake-dep-info-action@v1.1.0
+      with:
+        input: ${{ inputs.dependency }}
+
+    - name: Update ${{ inputs.dependency }}
+      shell: bash
+      run: nix flake lock --update-input ${{ inputs.dependency }}
+
+    - name: Get new commit
+      id: get_new_commit
+      uses: cpcloud/flake-dep-info-action@v1.1.0
+      with:
+        input: ${{ inputs.dependency }}
+
+    - name: Get commit details for ${{ inputs.dependency }} changes
+      uses: cpcloud/compare-commits-action@v5.0.9
+      id: compare_commits
+      if: ${{ steps.get_current_commit.outputs.rev != steps.get_new_commit.outputs.rev }}
+      with:
+        owner: ${{ steps.get_current_commit.outputs.owner }}
+        repo: ${{ steps.get_current_commit.outputs.repo }}
+        basehead: ${{ steps.get_current_commit.outputs.rev }}...${{ steps.get_new_commit.outputs.rev }}
+        token: ${{ inputs.github-token }}
+        include-merge-commits: ${{ fromJSON(inputs.include-merge-commits) }}
+
+    - name: Create a pull request to update ${{ inputs.dependency }}
+      if: ${{ steps.get_current_commit.outputs.rev != steps.get_new_commit.outputs.rev }}
+      id: create_pr
+      uses: peter-evans/create-pull-request@v3
+      with:
+        commit-message: "chore(flake/${{ inputs.dependency }}): ${{ steps.get_current_commit.outputs.short-rev }} -> ${{ steps.get_new_commit.outputs.short-rev }}"
+        branch: "${{ inputs.pull-request-branch-prefix }}${{ inputs.dependency }}"
+        delete-branch: true
+        author: ${{ inputs.pull-request-author }}
+        title: "chore(flake/${{ inputs.dependency }}): `${{ steps.get_current_commit.outputs.short-rev }}` -> `${{ steps.get_new_commit.outputs.short-rev }}`"
+        token: ${{ inputs.pull-request-token }}
+        body: ${{ steps.compare_commits.outputs.differences }}
+        labels: ${{ inputs.pull-request-labels }}
+
+    - name: Set the PR to automerge
+      if: ${{ steps.create_pr.outputs.pull-request-operation == 'created' && fromJSON(inputs.automerge) }}
+      uses: peter-evans/enable-pull-request-automerge@v1
+      with:
+        token: ${{ inputs.pull-request-token }}
+        pull-request-number: ${{ steps.create_pr.outputs.pull-request-number }}
+        merge-method: ${{ inputs.pr-merge-method }}
