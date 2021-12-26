@@ -6,7 +6,7 @@ This action will create PRs that update flake dependencies.
 
 ```yaml
 jobs:
-  build:
+  update-deps:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -19,8 +19,9 @@ jobs:
         uses: cpcloud/flake-update-action@*
         with:
           dependency: ${{ matrix.dependency }}
+          pull-request-token: ${{ secrets.ANOTHER_TOKEN }}
+          pull-request-author: "Me <me@me.com>"
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          pull-request-token: ${{ env.ANOTHER_TOKEN }}
 ```
 
 ## Inputs
@@ -36,6 +37,14 @@ inputs:
   pull-request-author:
     required: true
     description: "The author of the pull request"
+  pull-request-merge-method:
+    required: false
+    description: "The merge method for automerging pull requests"
+    default: "rebase"
+  delete-branch:
+    required: false
+    default: "false"
+    description: "Delete branch upon merge"
   github-token:
     required: false
     description: "Access token to increase the rate limit for GitHub API requests"
@@ -50,5 +59,9 @@ inputs:
   include-merge-commits:
     required: false
     description: "Whether to show merge commits in the log"
+    default: "false"
+  automerge:
+    required: false
+    description: "Whether to set the pull request to automatically merge on success. Requires that the automerge feature is enabled on GitHub."
     default: "false"
 ```
