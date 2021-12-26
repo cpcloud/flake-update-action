@@ -29,6 +29,7 @@ jobs:
         uses: ./
         with:
           dependency: ${{ matrix.input }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           pull-request-token: ${{ steps.generate_token.outputs.token }}
           pull-request-author: "Phillip Ground <cpcloudbot@gmail.com>"
           pull-request-labels: dependencies,autorebase:opt-in
