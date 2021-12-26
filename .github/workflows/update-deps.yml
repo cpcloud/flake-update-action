@@ -33,3 +33,4 @@ jobs:
           pull-request-author: "Phillip Ground <cpcloudbot@gmail.com>"
           pull-request-labels: dependencies,autorebase:opt-in
           automerge: true
+          delete-branch: true

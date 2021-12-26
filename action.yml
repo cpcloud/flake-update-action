@@ -11,6 +11,14 @@ inputs:
   pull-request-author:
     required: true
     description: "The author of the pull request"
+  pull-request-merge-method:
+    required: false
+    description: "The merge method for automerging pull requests"
+    default: "rebase"
+  delete-branch:
+    required: false
+    default: "false"
+    description: "Delete branch upon merge"
   github-token:
     required: false
     description: "Access token to increase the rate limit for GitHub API requests"
@@ -67,7 +75,7 @@ runs:
       with:
         commit-message: "chore(flake/${{ inputs.dependency }}): ${{ steps.get_current_commit.outputs.short-rev }} -> ${{ steps.get_new_commit.outputs.short-rev }}"
         branch: "${{ inputs.pull-request-branch-prefix }}${{ inputs.dependency }}"
-        delete-branch: true
+        delete-branch: ${{ fromJSON(inputs.delete-branch) }}
         author: ${{ inputs.pull-request-author }}
         title: "chore(flake/${{ inputs.dependency }}): `${{ steps.get_current_commit.outputs.short-rev }}` -> `${{ steps.get_new_commit.outputs.short-rev }}`"
         token: ${{ inputs.pull-request-token }}
@@ -80,4 +88,4 @@ runs:
       with:
         token: ${{ inputs.pull-request-token }}
         pull-request-number: ${{ steps.create_pr.outputs.pull-request-number }}
-        merge-method: ${{ inputs.pr-merge-method }}
+        merge-method: ${{ inputs.pull-request-merge-method }}
