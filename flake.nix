@@ -1,5 +1,5 @@
 {
-  description = "Compare a range of commits in GitHub Actions";
+  description = "Update flakes using GitHub actions";
 
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
@@ -44,12 +44,6 @@
                 ];
               };
 
-              eslint = {
-                enable = true;
-                entry = mkForce "${pkgs.nodejs}/bin/npm run lint";
-                files = "\\.ts$";
-              };
-
               shellcheck = {
                 enable = true;
                 entry = mkForce "${pkgs.shellcheck}/bin/shellcheck";
@@ -68,13 +62,12 @@
         };
 
         devShell = pkgs.mkShell {
-          name = "compare-commits-action";
+          name = "flake-update-action";
           buildInputs = with pkgs; [
             fd
             git
             nix-linter
             nixpkgs-fmt
-            nodejs
             shellcheck
             shfmt
           ];
