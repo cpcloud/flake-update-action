@@ -46,3 +46,27 @@ jobs:
           pull-request-labels: dependencies,autorebase:opt-in
           automerge: true
           delete-branch: true
+  release:
+    runs-on: ubuntu-latest
+    concurrency: release
+    needs:
+      - flake-update
+    steps:
+      - name: Generate a GitHub token
+        uses: tibdex/github-app-token@v1
+        id: generate_token
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - name: checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          token: ${{ steps.generate_token.outputs.token }}
+
+      - name: release
+        run: npx semantic-release
+        env:
+          GIT_CREDENTIALS: ${{ steps.generate_token.outputs.token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
