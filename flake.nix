@@ -2,7 +2,10 @@
   description = "Update flakes using GitHub actions";
 
   inputs = {
-    flake-utils.url = "github:numtide/flake-utils";
+    flake-utils = {
+      url = "github:numtide/flake-utils";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable-small";
 
@@ -16,7 +19,19 @@
   outputs = { self, nixpkgs, flake-utils, pre-commit-hooks }:
     flake-utils.lib.eachDefaultSystem (system:
       let
-        pkgs = nixpkgs.legacyPackages.${system};
+        pkgs = import nixpkgs {
+          inherit system;
+          overlays = [
+            (self: _: {
+              prettierTOML = self.writeShellScriptBin "prettier" ''
+                ${self.nodePackages.prettier}/bin/prettier \
+                --plugin-search-dir "${self.nodePackages.prettier-plugin-toml}/lib" \
+                "$@"
+              '';
+              protoletariatDevEnv = self.protoletariatDevEnv310;
+            })
+          ];
+        };
         inherit (pkgs.lib) mkForce;
       in
       {
@@ -37,11 +52,8 @@
 
               prettier = {
                 enable = true;
-                entry = mkForce "${pkgs.nodejs}/bin/npm run format-check";
-                types_or = [ "json" "toml" "yaml" "ts" ];
-                excludes = [
-                  "package-lock.json"
-                ];
+                entry = mkForce "${pkgs.prettierTOML}/bin/prettier --check";
+                types_or = [ "json" "toml" "yaml" ];
               };
 
               shellcheck = {
@@ -57,17 +69,16 @@
                 files = "\\.sh$";
               };
             };
-
           };
         };
 
         devShell = pkgs.mkShell {
           name = "flake-update-action";
           buildInputs = with pkgs; [
-            fd
             git
             nix-linter
             nixpkgs-fmt
+            prettierTOML
             shellcheck
             shfmt
           ];
