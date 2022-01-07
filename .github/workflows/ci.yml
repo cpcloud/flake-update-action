@@ -25,7 +25,8 @@ jobs:
         with:
           extra_nix_config: |
             access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
-      - id: get-flakes
+      - name: generate flake matrix
+        id: get-flakes
         run: |
           set -euo pipefail
 
@@ -55,10 +56,10 @@ jobs:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.APP_PRIVATE_KEY }}
 
-      - name: Update ${{ matrix.input }}
+      - name: Update ${{ matrix.flake }}
         uses: ./
         with:
-          dependency: ${{ matrix.input }}
+          dependency: ${{ matrix.flake }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           pull-request-token: ${{ steps.generate-token.outputs.token }}
           pull-request-author: "phillip-ground[bot] <phillip-ground[bot]@users.noreply.github.com>"
