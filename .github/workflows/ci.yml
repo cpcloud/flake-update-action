@@ -33,6 +33,8 @@ jobs:
           echo "::set-output name=matrix::$flakes"
   flake-update:
     runs-on: ubuntu-latest
+    needs:
+      - get-flakes
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.get-flakes.outputs.matrix) }}
