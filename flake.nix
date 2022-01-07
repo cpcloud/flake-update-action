@@ -20,17 +20,16 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs {
-          inherit system;
           overlays = [
-            (self: _: {
-              prettierTOML = self.writeShellScriptBin "prettier" ''
-                ${self.nodePackages.prettier}/bin/prettier \
-                --plugin-search-dir "${self.nodePackages.prettier-plugin-toml}/lib" \
+            (final: _: {
+              prettierTOML = final.writeShellScriptBin "prettier" ''
+                ${final.nodePackages.prettier}/bin/prettier \
+                --plugin-search-dir "${final.nodePackages.prettier-plugin-toml}/lib" \
                 "$@"
               '';
-              protoletariatDevEnv = self.protoletariatDevEnv310;
             })
           ];
+          inherit system;
         };
         inherit (pkgs.lib) mkForce;
       in
@@ -60,7 +59,7 @@
                 enable = true;
                 entry = mkForce "${pkgs.shellcheck}/bin/shellcheck";
                 files = "\\.sh$";
-                types_or = mkForce [ ];
+                types_or = [ "file" ];
               };
 
               shfmt = {
@@ -82,13 +81,7 @@
             shellcheck
             shfmt
           ];
-
-          # npm forces output that can't possibly be useful to stdout so redirect
-          # stdout to stderr
-          shellHook = ''
-            ${self.checks.${system}.pre-commit-check.shellHook}
-            npm install --no-fund 1>&2
-          '';
+          inherit (self.checks.${system}.pre-commit-check) shellHook;
         };
       });
 }
