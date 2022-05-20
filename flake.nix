@@ -22,11 +22,14 @@
         pkgs = import nixpkgs {
           overlays = [
             (final: _: {
-              prettierTOML = final.writeShellScriptBin "prettier" ''
-                ${final.nodePackages.prettier}/bin/prettier \
-                --plugin-search-dir "${final.nodePackages.prettier-plugin-toml}/lib" \
-                "$@"
-              '';
+              prettierTOML = final.writeShellApplication {
+                name = "prettier";
+                text = ''
+                  ${final.nodePackages.prettier}/bin/prettier \
+                  --plugin-search-dir "${final.nodePackages.prettier-plugin-toml}/lib" \
+                  "$@"
+                '';
+              };
             })
           ];
           inherit system;
@@ -54,19 +57,6 @@
                 entry = mkForce "${pkgs.prettierTOML}/bin/prettier --check";
                 types_or = [ "json" "toml" "yaml" ];
               };
-
-              shellcheck = {
-                enable = true;
-                entry = mkForce "${pkgs.shellcheck}/bin/shellcheck";
-                files = "\\.sh$";
-                types_or = [ "file" ];
-              };
-
-              shfmt = {
-                enable = true;
-                entry = mkForce "${pkgs.shfmt}/bin/shfmt -i 2 -sr -d -s -l";
-                files = "\\.sh$";
-              };
             };
           };
         };
@@ -78,8 +68,6 @@
             nix-linter
             nixpkgs-fmt
             prettierTOML
-            shellcheck
-            shfmt
           ];
           inherit (self.checks.${system}.pre-commit-check) shellHook;
         };
