@@ -1,5 +1,12 @@
 # Release Notes
 
+## [1.0.4](https://github.com/cpcloud/flake-update-action/compare/v1.0.3...v1.0.4) (2022-12-30)
+
+
+### Bug Fixes
+
+* use `GITHUB_OUTPUT` ([0f713ae](https://github.com/cpcloud/flake-update-action/commit/0f713ae705dad03e8bd2427fb807a6673a131321))
+
 ## [1.0.3](https://github.com/cpcloud/flake-update-action/compare/v1.0.2...v1.0.3) (2022-12-30)
 
 
