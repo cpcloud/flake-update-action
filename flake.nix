@@ -41,16 +41,8 @@
           pre-commit-check = pre-commit-hooks.lib.${system}.run {
             src = ./.;
             hooks = {
-              nix-linter = {
-                enable = true;
-                entry = mkForce "${pkgs.nix-linter}/bin/nix-linter";
-                excludes = [ "nix/sources.nix" ];
-              };
-
-              nixpkgs-fmt = {
-                enable = true;
-                entry = mkForce "${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt --check";
-              };
+              statix.enable = true;
+              nixpkgs-fmt.enable = true;
 
               prettier = {
                 enable = true;
@@ -65,9 +57,9 @@
           name = "flake-update-action";
           buildInputs = with pkgs; [
             git
-            nix-linter
             nixpkgs-fmt
             prettierTOML
+            statix
           ];
           inherit (self.checks.${system}.pre-commit-check) shellHook;
         };
