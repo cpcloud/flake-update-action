@@ -38,6 +38,7 @@
           pre-commit-check = pre-commit-hooks.lib.${system}.run {
             src = ./.;
             hooks = {
+              deadnix.enable = true;
               statix.enable = true;
               nixpkgs-fmt.enable = true;
 
@@ -53,6 +54,7 @@
         devShell = pkgs.mkShell {
           name = "flake-update-action";
           buildInputs = with pkgs; [
+            deadnix
             git
             nixpkgs-fmt
             prettierTOML
