@@ -90,7 +90,7 @@ jobs:
         with:
           node-version: 16
 
-      - uses: cycjimmy/semantic-release-action@v3.4.0
+      - uses: cycjimmy/semantic-release-action@v3.4.2
         with:
           extra_plugins: |
             @semantic-release/commit-analyzer
