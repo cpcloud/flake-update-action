@@ -49,7 +49,7 @@ runs:
 
     - name: Update ${{ inputs.dependency }}
       shell: bash
-      run: nix flake lock --update-input ${{ inputs.dependency }}
+      run: nix flake update ${{ inputs.dependency }}
 
     - name: Get new commit
       id: get_new_commit
