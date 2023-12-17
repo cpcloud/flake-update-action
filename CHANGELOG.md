@@ -1,5 +1,12 @@
 # Release Notes
 
+## [2.0.1](https://github.com/cpcloud/flake-update-action/compare/v2.0.0...v2.0.1) (2023-12-17)
+
+
+### Reverts
+
+* fix(action): use non deprecated version of `nix flake update` ([9462931](https://github.com/cpcloud/flake-update-action/commit/9462931effdd11d9280bcdf7314a923ee5165a35))
+
 # [2.0.0](https://github.com/cpcloud/flake-update-action/compare/v1.0.4...v2.0.0) (2023-12-09)
 
 
