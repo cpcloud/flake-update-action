@@ -71,7 +71,7 @@ runs:
     - name: Create a pull request to update ${{ inputs.dependency }}
       if: ${{ steps.get_current_commit.outputs.rev != steps.get_new_commit.outputs.rev }}
       id: create_pr
-      uses: peter-evans/create-pull-request@v6
+      uses: peter-evans/create-pull-request@v7
       with:
         commit-message: "chore(flake/${{ inputs.dependency }}): ${{ steps.get_current_commit.outputs.short-rev }} -> ${{ steps.get_new_commit.outputs.short-rev }}"
         branch: "${{ inputs.pull-request-branch-prefix }}${{ inputs.dependency }}"
