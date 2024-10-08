@@ -64,4 +64,8 @@ inputs:
     required: false
     description: "Whether to set the pull request to automatically merge on success. Requires that the automerge feature is enabled on GitHub."
     default: "false"
+  signoff:
+    required: false
+    description: "Whether to sign off PR."
+    default: "false"
 ```
