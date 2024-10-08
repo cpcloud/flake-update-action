@@ -85,7 +85,7 @@ runs:
         token: ${{ inputs.pull-request-token }}
         body: ${{ steps.compare_commits.outputs.differences }}
         labels: ${{ inputs.pull-request-labels }}
-        signoff: ${{ inputs.pull-requirest.signoff }}
+        signoff: ${{ inputs.signoff }}
 
     - name: Set the PR to automerge
       if: ${{ steps.create_pr.outputs.pull-request-operation == 'created' && fromJSON(inputs.automerge) }}
