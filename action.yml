@@ -38,6 +38,10 @@ inputs:
     required: false
     description: "Whether to set the pull request to automatically merge on success. Requires that the automerge feature is enabled on GitHub."
     default: "false"
+  signoff:
+    required: false
+    description: "Whether to sign off PR."
+    default: "false"
 runs:
   using: composite
   steps:
@@ -81,6 +85,7 @@ runs:
         token: ${{ inputs.pull-request-token }}
         body: ${{ steps.compare_commits.outputs.differences }}
         labels: ${{ inputs.pull-request-labels }}
+        signoff: ${{ inputs.pull-requirest.signoff }}
 
     - name: Set the PR to automerge
       if: ${{ steps.create_pr.outputs.pull-request-operation == 'created' && fromJSON(inputs.automerge) }}
