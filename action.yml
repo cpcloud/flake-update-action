@@ -58,7 +58,7 @@ runs:
         input: ${{ inputs.dependency }}
 
     - name: Get commit details for ${{ inputs.dependency }} changes
-      uses: cpcloud/compare-commits-action@v5.0.37
+      uses: cpcloud/compare-commits-action@v5.0.42
       id: compare_commits
       if: ${{ steps.get_current_commit.outputs.rev != steps.get_new_commit.outputs.rev }}
       with:
