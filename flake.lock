@@ -74,23 +74,17 @@
     "pre-commit-hooks": {
       "inputs": {
         "flake-compat": "flake-compat",
-        "flake-utils": [
-          "flake-utils"
-        ],
         "gitignore": "gitignore",
         "nixpkgs": [
-          "nixpkgs"
-        ],
-        "nixpkgs-stable": [
           "nixpkgs"
         ]
       },
       "locked": {
-        "lastModified": 1711957905,
-        "narHash": "sha256-8aEIBDbVyntFs0yzfo3uJ7SpvFoMABhAp4URoD8daZ0=",
+        "lastModified": 1747372754,
+        "narHash": "sha256-2Y53NGIX2vxfie1rOW0Qb86vjRZ7ngizoo+bnXU9D9k=",
         "owner": "cachix",
         "repo": "pre-commit-hooks.nix",
-        "rev": "ffbf46949fcf41378498141341998b60fdbb2a32",
+        "rev": "80479b6ec16fefd9c1db3ea13aeb038c60530f46",
         "type": "github"
       },
       "original": {
